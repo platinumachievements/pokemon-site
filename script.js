@@ -30,60 +30,51 @@ async function fetchPokemon() {
     resultDiv.innerHTML = 'Loading...';
     
     try {
-        // Ensure we have a clean URL by constructing it properly
+        // Construct the URL
         const baseUrl = window.location.origin;
-        const url = new URL('/pokemon', baseUrl);
-        url.searchParams.append('name', name);
+        const url = `${baseUrl}/pokemon?name=${encodeURIComponent(name)}`;
+        console.log('Fetching from URL:', url);
         
-        console.log('Fetching from URL:', url.toString());
+        // Directly fetch the SVG using an image element
+        const img = document.createElement('img');
+        img.style.maxWidth = '100%';
+        img.style.height = 'auto';
+        img.alt = `${name} Pokemon card`;
         
-        // Add proper accept header to tell server we want SVG
-        const response = await fetch(url.toString(), {
-            method: 'GET',
-            headers: {
-                'Accept': 'image/svg+xml'
-            }
-        });
+        // Create download buttons
+        const svgLink = document.createElement('a');
+        svgLink.href = url;
+        svgLink.className = 'download-btn';
+        svgLink.textContent = 'Download SVG';
+        svgLink.download = `${name}.svg`;
         
-        if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(errorText || `Pokémon not found (Status: ${response.status})`);
-        }
+        const pngLink = document.createElement('a');
+        pngLink.href = `${url}&download=true`;
+        pngLink.className = 'download-btn';
+        pngLink.textContent = 'Download PNG';
+        pngLink.target = '_blank';
         
-        // Check content type to decide how to handle response
-        const contentType = response.headers.get('Content-Type') || '';
-        console.log('Response content type:', contentType);
+        const buttonDiv = document.createElement('div');
+        buttonDiv.className = 'card-actions';
+        buttonDiv.appendChild(svgLink);
+        buttonDiv.appendChild(pngLink);
         
-        if (contentType.includes('image/svg+xml')) {
-            // Handle SVG image response using an img tag
-            const svgText = await response.text();
-            console.log('SVG received, length:', svgText.length);
-            
-            // Use data URI for simplicity and reliability
-            const dataUri = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svgText)}`;
-            
-            // Create a download URL for PNG
-            const pngDownloadUrl = `${url.toString()}&download=true`;
-            
-            resultDiv.innerHTML = `
-                <div class="card-container">
-                    <img src="${dataUri}" alt="Pokemon card" style="max-width:100%; height:auto;">
-                    <div class="card-actions">
-                        <a href="${dataUri}" download="${name}.svg" class="download-btn">Download SVG</a>
-                        <a href="${pngDownloadUrl}" target="_blank" class="download-btn">Download PNG</a>
-                    </div>
-                </div>
-            `;
-        } else if (contentType.includes('application/json')) {
-            // Handle JSON response
-            const data = await response.json();
-            resultDiv.innerHTML = `<p>Received JSON: ${JSON.stringify(data)}</p>`;
-        } else {
-            // Handle other response types
-            const text = await response.text();
-            resultDiv.innerHTML = `<div class="error">Unexpected response format: ${contentType}</div>`;
-            console.error('Unexpected response:', text);
-        }
+        const cardContainer = document.createElement('div');
+        cardContainer.className = 'card-container';
+        cardContainer.appendChild(img);
+        cardContainer.appendChild(buttonDiv);
+        
+        // Clear previous content
+        resultDiv.innerHTML = '';
+        resultDiv.appendChild(cardContainer);
+        
+        // Set the image src after adding to DOM to prevent flashes
+        img.src = url;
+        
+        // Handle errors with the image
+        img.onerror = function() {
+            resultDiv.innerHTML = '<p class="error">Failed to load the Pokemon card. Please try again.</p>';
+        };
     } catch (error) {
         resultDiv.innerHTML = `<p class="error">${error.message}</p>`;
         console.error('Error:', error);
