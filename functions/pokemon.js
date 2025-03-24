@@ -54,9 +54,9 @@ export async function onRequestGet({ request }) {
     }));
     
     // Get the sprite image data
+    const spriteUrl = pokemon.sprites.front_default;
     console.log(`[Pokemon Worker] Fetching sprite image from: ${spriteUrl}`);
     const spriteStartTime = Date.now();
-    const spriteUrl = pokemon.sprites.front_default;
     const spriteResponse = await fetch(spriteUrl);
     const spriteArrayBuffer = await spriteResponse.arrayBuffer();
     const spriteBase64 = btoa(String.fromCharCode(...new Uint8Array(spriteArrayBuffer)));
