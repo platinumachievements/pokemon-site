@@ -8,6 +8,14 @@ async function onRequestGet({ request }) {
   if (!pokeResponse.ok)
     return new Response("Pok\xE9mon not found", { status: 404 });
   const pokemon = await pokeResponse.json();
+  const accept = request.headers.get("Accept") || "";
+  const downloadParam = url.searchParams.get("download");
+  if (downloadParam === "true" || accept.includes("image/png")) {
+    const svgUrl = new URL(request.url);
+    svgUrl.searchParams.delete("download");
+    const encodedSvgUrl = encodeURIComponent(svgUrl.toString());
+    return Response.redirect(`https://images.weserv.nl/?url=${encodedSvgUrl}&output=png&w=600`, 302);
+  }
   const spriteUrl = pokemon.sprites.front_default;
   const formattedTypes = pokemon.types.map((type) => ({
     name: type.type.name,
@@ -102,19 +110,11 @@ async function onRequestGet({ request }) {
         <text x="${width / 2}" y="${height - 15}" class="footer">Pok\xE9mon Card Generator</text>
     </svg>
     `;
-  const accept = request.headers.get("Accept") || "";
-  if (accept.includes("image/svg+xml") || accept.includes("text/html")) {
-    return new Response(svgCard, {
-      headers: {
-        "Content-Type": "image/svg+xml",
-        "Cache-Control": "public, max-age=3600"
-      }
-    });
-  }
   return new Response(svgCard, {
     headers: {
       "Content-Type": "image/svg+xml",
-      "Cache-Control": "public, max-age=3600"
+      "Cache-Control": "public, max-age=3600",
+      "Content-Disposition": `inline; filename="${pokemon.name}.svg"`
     }
   });
 }
