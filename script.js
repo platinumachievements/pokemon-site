@@ -20,12 +20,26 @@
 
 // server side
 async function fetchPokemon() {
-    const name = document.getElementById('pokemonName').value.toLowerCase();
+    const name = document.getElementById('pokemonName').value.toLowerCase().trim();
+    if (!name) {
+        document.getElementById('pokemonResult').innerHTML = '<p class="error">Please enter a Pokémon name</p>';
+        return;
+    }
+    
     const resultDiv = document.getElementById('pokemonResult');
     resultDiv.innerHTML = 'Loading...';
+    
     try {
+        // Ensure we have a clean URL by constructing it properly
+        const baseUrl = window.location.origin;
+        const url = new URL('/pokemon', baseUrl);
+        url.searchParams.append('name', name);
+        
+        console.log('Fetching from URL:', url.toString());
+        
         // Add proper accept header to tell server we want SVG
-        const response = await fetch(`/pokemon?name=${name}`, {
+        const response = await fetch(url.toString(), {
+            method: 'GET',
             headers: {
                 'Accept': 'image/svg+xml'
             }
@@ -33,19 +47,33 @@ async function fetchPokemon() {
         
         if (!response.ok) {
             const errorText = await response.text();
-            throw new Error(errorText || 'Pokémon not found');
+            throw new Error(errorText || `Pokémon not found (Status: ${response.status})`);
         }
         
         // Check content type to decide how to handle response
         const contentType = response.headers.get('Content-Type') || '';
+        console.log('Response content type:', contentType);
         
         if (contentType.includes('image/svg+xml')) {
             // Handle SVG image response using an img tag
             const svgText = await response.text();
-            const blob = new Blob([svgText], {type: 'image/svg+xml'});
-            const url = URL.createObjectURL(blob);
+            console.log('SVG received, length:', svgText.length);
             
-            resultDiv.innerHTML = `<img src="${url}" alt="Pokemon card" style="max-width:100%; height:auto;">`;
+            // Use data URI for simplicity and reliability
+            const dataUri = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svgText)}`;
+            
+            // Create a download URL for PNG
+            const pngDownloadUrl = `${url.toString()}&download=true`;
+            
+            resultDiv.innerHTML = `
+                <div class="card-container">
+                    <img src="${dataUri}" alt="Pokemon card" style="max-width:100%; height:auto;">
+                    <div class="card-actions">
+                        <a href="${dataUri}" download="${name}.svg" class="download-btn">Download SVG</a>
+                        <a href="${pngDownloadUrl}" target="_blank" class="download-btn">Download PNG</a>
+                    </div>
+                </div>
+            `;
         } else if (contentType.includes('application/json')) {
             // Handle JSON response
             const data = await response.json();

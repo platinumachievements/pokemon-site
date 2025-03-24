@@ -22,4 +22,33 @@ img {
     border-left: 4px solid #d32f2f;
 }
 
+.card-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px auto;
+    max-width: 400px;
+}
+
+.card-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.download-btn {
+    display: inline-block;
+    background-color: #3498db;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.download-btn:hover {
+    background-color: #2980b9;
+}
+
 /* Pokemon Card Styles */

@@ -8,6 +8,22 @@ export async function onRequestGet({ request }) {
     if (!pokeResponse.ok) return new Response('Pokémon not found', { status: 404 });
     const pokemon = await pokeResponse.json();
 
+    // Check if the client wants an image/png response
+    const accept = request.headers.get('Accept') || '';
+    const downloadParam = url.searchParams.get('download');
+    
+    if (downloadParam === 'true' || accept.includes('image/png')) {
+        // For image download requests, redirect to a popular image conversion service
+        // that can convert our SVG to PNG on-the-fly
+        const svgUrl = new URL(request.url);
+        svgUrl.searchParams.delete('download');
+        const encodedSvgUrl = encodeURIComponent(svgUrl.toString());
+        
+        // Redirect to a service that can convert SVG to PNG
+        return Response.redirect(`https://images.weserv.nl/?url=${encodedSvgUrl}&output=png&w=600`, 302);
+    }
+
+    // Continue with the existing SVG generation code...
     // Get Pokémon sprite
     const spriteUrl = pokemon.sprites.front_default;
     
@@ -112,25 +128,12 @@ export async function onRequestGet({ request }) {
     </svg>
     `;
     
-    // Decide whether to return SVG or attempt conversion to PNG
-    const accept = request.headers.get('Accept') || '';
-    
-    if (accept.includes('image/svg+xml') || accept.includes('text/html')) {
-        // Return SVG directly
-        return new Response(svgCard, {
-            headers: {
-                'Content-Type': 'image/svg+xml',
-                'Cache-Control': 'public, max-age=3600'
-            }
-        });
-    }
-    
-    // For most cases, returning SVG is the best option as it's a proper image format
-    // that browsers can display directly
+    // Return SVG with appropriate headers
     return new Response(svgCard, {
         headers: {
             'Content-Type': 'image/svg+xml',
-            'Cache-Control': 'public, max-age=3600'
+            'Cache-Control': 'public, max-age=3600',
+            'Content-Disposition': `inline; filename="${pokemon.name}.svg"`
         }
     });
 }

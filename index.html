@@ -8,8 +8,10 @@
 </head>
 <body>
     <h1>Find a Pokémon</h1>
-    <input type="text" id="pokemonName" placeholder="Enter Pokémon name">
-    <button onclick="fetchPokemon()">Search</button>
+    <form id="pokemonForm" onsubmit="return false;">
+        <input type="text" id="pokemonName" placeholder="Enter Pokémon name">
+        <button type="button" onclick="fetchPokemon()">Search</button>
+    </form>
     <div id="pokemonResult"></div>
     <a href="list.html">See Pokémon List</a>
     <script src="script.js"></script>
