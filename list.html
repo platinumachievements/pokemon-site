@@ -8,10 +8,13 @@
 </head>
 <body>
     <h1>Pokémon by Type</h1>
-    <input type="text" id="pokemonType" placeholder="Enter a type (e.g., fire)">
-    <button onclick="fetchPokemonByType()">Search</button>
-    <div id="pokemonList"></div>
-    <a href="/">Back to Search</a>
+    <div class="search-container">
+        <input type="text" id="pokemonType" placeholder="Enter a type (e.g., fire)">
+        <button onclick="fetchPokemonByType()">Search</button>
+    </div>
+    <div id="loading" class="loading-indicator"></div>
+    <div id="pokemonList" class="pokemon-grid"></div>
+    <a href="/" class="back-link">Back to Search</a>
     <script src="script.js"></script>
 </body>
 </html>
