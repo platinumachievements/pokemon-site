@@ -10,6 +10,11 @@
     <h1>Pokémon by Type</h1>
     <div class="search-container">
         <input type="text" id="pokemonType" placeholder="Enter a type (e.g., fire)">
+        <select id="designSelect" class="design-select">
+            <option value="random">Random Design</option>
+            <option value="classic">Classic</option>
+            <option value="modern">Modern</option>
+        </select>
         <button onclick="fetchPokemonByType()">Search</button>
     </div>
     <div id="loading" class="loading-indicator"></div>

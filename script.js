@@ -26,13 +26,23 @@ async function fetchPokemon() {
         return;
     }
     
+    // Get the selected design
+    const designSelect = document.getElementById('designSelect');
+    const selectedDesign = designSelect ? designSelect.value : null;
+    
     const resultDiv = document.getElementById('pokemonResult');
     resultDiv.innerHTML = 'Loading...';
     
     try {
         // Construct the URL
         const baseUrl = window.location.origin;
-        const url = `${baseUrl}/pokemon?name=${encodeURIComponent(name)}`;
+        let url = `${baseUrl}/pokemon?name=${encodeURIComponent(name)}`;
+        
+        // Add design parameter if selected
+        if (selectedDesign && selectedDesign !== 'random') {
+            url += `&design=${selectedDesign}`;
+        }
+        
         console.log('Fetching from URL:', url);
         
         // Directly fetch the SVG using an image element
@@ -137,9 +147,18 @@ async function fetchPokemonByType() {
 
 async function fetchPokemonCard(name, container) {
     try {
+        // Get the selected design
+        const designSelect = document.getElementById('designSelect');
+        const selectedDesign = designSelect ? designSelect.value : null;
+        
         // Construct the URL for our Pokemon worker
         const baseUrl = window.location.origin;
-        const url = `${baseUrl}/pokemon?name=${encodeURIComponent(name)}`;
+        let url = `${baseUrl}/pokemon?name=${encodeURIComponent(name)}`;
+        
+        // Add design parameter if selected
+        if (selectedDesign && selectedDesign !== 'random') {
+            url += `&design=${selectedDesign}`;
+        }
         
         // Create a card container
         const cardContainer = document.createElement('div');

@@ -8,12 +8,17 @@
 </head>
 <body>
     <h1>Find a Pokémon</h1>
-    <form id="pokemonForm" onsubmit="return false;">
+    <div class="search-container">
         <input type="text" id="pokemonName" placeholder="Enter Pokémon name">
+        <select id="designSelect" class="design-select">
+            <option value="random">Random Design</option>
+            <option value="classic">Classic</option>
+            <option value="modern">Modern</option>
+        </select>
         <button type="button" onclick="fetchPokemon()">Search</button>
-    </form>
+    </div>
     <div id="pokemonResult"></div>
-    <a href="/list">See Pokémon List</a>
+    <a href="/list" class="card-link">See Pokémon by Type</a>
     <script src="script.js"></script>
 </body>
 </html>
