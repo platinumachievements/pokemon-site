@@ -40,9 +40,12 @@ async function fetchPokemon() {
         const contentType = response.headers.get('Content-Type') || '';
         
         if (contentType.includes('image/svg+xml')) {
-            // Handle SVG image response
+            // Handle SVG image response using an img tag
             const svgText = await response.text();
-            resultDiv.innerHTML = svgText;
+            const blob = new Blob([svgText], {type: 'image/svg+xml'});
+            const url = URL.createObjectURL(blob);
+            
+            resultDiv.innerHTML = `<img src="${url}" alt="Pokemon card" style="max-width:100%; height:auto;">`;
         } else if (contentType.includes('application/json')) {
             // Handle JSON response
             const data = await response.json();
@@ -55,6 +58,7 @@ async function fetchPokemon() {
         }
     } catch (error) {
         resultDiv.innerHTML = `<p class="error">${error.message}</p>`;
+        console.error('Error:', error);
     }
 }
 
