@@ -24,14 +24,37 @@ async function fetchPokemon() {
     const resultDiv = document.getElementById('pokemonResult');
     resultDiv.innerHTML = 'Loading...';
     try {
-        const response = await fetch(`/pokemon?name=${name}`);
-        if (!response.ok) throw new Error('Pokémon not found');
+        // Add proper accept header to tell server we want SVG
+        const response = await fetch(`/pokemon?name=${name}`, {
+            headers: {
+                'Accept': 'image/svg+xml'
+            }
+        });
         
-        // Handle SVG image response
-        const svgText = await response.text();
-        resultDiv.innerHTML = svgText;
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(errorText || 'Pokémon not found');
+        }
+        
+        // Check content type to decide how to handle response
+        const contentType = response.headers.get('Content-Type') || '';
+        
+        if (contentType.includes('image/svg+xml')) {
+            // Handle SVG image response
+            const svgText = await response.text();
+            resultDiv.innerHTML = svgText;
+        } else if (contentType.includes('application/json')) {
+            // Handle JSON response
+            const data = await response.json();
+            resultDiv.innerHTML = `<p>Received JSON: ${JSON.stringify(data)}</p>`;
+        } else {
+            // Handle other response types
+            const text = await response.text();
+            resultDiv.innerHTML = `<div class="error">Unexpected response format: ${contentType}</div>`;
+            console.error('Unexpected response:', text);
+        }
     } catch (error) {
-        resultDiv.innerHTML = `<p>${error.message}</p>`;
+        resultDiv.innerHTML = `<p class="error">${error.message}</p>`;
     }
 }
 
