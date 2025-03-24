@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "esbuild functions/pokemon.js --bundle --platform=neutral --target=es2020 --outfile=dist/functions/pokemon.js"
+    "build": "mkdir -p dist && cp -r *.html *.css *.js dist/ && esbuild functions/pokemon.js --bundle --platform=neutral --target=es2020 --external:sharp --outfile=dist/functions/pokemon.js"
   },
   "repository": {
     "type": "git",
