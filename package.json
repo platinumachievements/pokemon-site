@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "mkdir -p dist && cp -r *.html *.css *.js dist/ && esbuild functions/pokemon.js --bundle --platform=neutral --target=es2020 --external:sharp --outfile=dist/functions/pokemon.js"
+    "build": "mkdir -p dist && cp -r *.html *.css *.js dist/ && esbuild functions/pokemon.js --bundle --platform=neutral --target=es2020 --external:sharp --outfile=dist/functions/pokemon.js",
+    "dev": "npm run build && npx wrangler pages dev dist --port 8080"
   },
   "repository": {
     "type": "git",
