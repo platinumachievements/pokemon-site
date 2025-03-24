@@ -1,9 +1,30 @@
+// client side
+
+// async function fetchPokemon() {
+//     const name = document.getElementById('pokemonName').value.toLowerCase();
+//     const resultDiv = document.getElementById('pokemonResult');
+//     resultDiv.innerHTML = 'Loading...';
+//     try {
+//         const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);
+//         if (!response.ok) throw new Error('Pokémon not found');
+//         const data = await response.json();
+//         resultDiv.innerHTML = `
+//             <h2>${data.name}</h2>
+//             <img src="${data.sprites.front_default}" alt="${data.name}">
+//             <p>Height: ${data.height} | Weight: ${data.weight}</p>
+//         `;
+//     } catch (error) {
+//         resultDiv.innerHTML = `<p>${error.message}</p>`;
+//     }
+// }
+
+// server side
 async function fetchPokemon() {
     const name = document.getElementById('pokemonName').value.toLowerCase();
     const resultDiv = document.getElementById('pokemonResult');
     resultDiv.innerHTML = 'Loading...';
     try {
-        const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);
+        const response = await fetch(`/pokemon?name=${name}`);
         if (!response.ok) throw new Error('Pokémon not found');
         const data = await response.json();
         resultDiv.innerHTML = `
