@@ -1,0 +1,28 @@
+{
+  "name": "pokemon-site",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "esbuild functions/pokemon.js --bundle --platform=neutral --target=es2020 --outfile=dist/functions/pokemon.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/platinumachievements/pokemon-site.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/platinumachievements/pokemon-site/issues"
+  },
+  "homepage": "https://github.com/platinumachievements/pokemon-site#readme",
+  "dependencies": {
+    "workers-og": "^0.0.25"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250321.0",
+    "esbuild": "^0.20.2"
+  }
+}

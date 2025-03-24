@@ -26,12 +26,10 @@ async function fetchPokemon() {
     try {
         const response = await fetch(`/pokemon?name=${name}`);
         if (!response.ok) throw new Error('Pokémon not found');
-        const data = await response.json();
-        resultDiv.innerHTML = `
-            <h2>${data.name}</h2>
-            <img src="${data.sprites.front_default}" alt="${data.name}">
-            <p>Height: ${data.height} | Weight: ${data.weight}</p>
-        `;
+        
+        // Handle SVG image response
+        const svgText = await response.text();
+        resultDiv.innerHTML = svgText;
     } catch (error) {
         resultDiv.innerHTML = `<p>${error.message}</p>`;
     }
