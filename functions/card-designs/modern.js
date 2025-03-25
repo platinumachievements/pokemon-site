@@ -1,3 +1,5 @@
+import { fitText } from '../utils/textfit.js';
+
 export function generateModernDesign(pokemon, spriteBase64, formattedTypes) {
     const width = 300;
     const height = 400;
@@ -22,9 +24,7 @@ export function generateModernDesign(pokemon, spriteBase64, formattedTypes) {
             <style>
                 .title {
                     font-family: Arial, Helvetica, sans-serif;
-                    font-size: 24px;
                     font-weight: bold;
-                    text-anchor: middle;
                     fill: white;
                     text-transform: capitalize;
                     filter: url(#shadow);
@@ -40,14 +40,12 @@ export function generateModernDesign(pokemon, spriteBase64, formattedTypes) {
                 
                 .stat-text {
                     font-family: Arial, Helvetica, sans-serif;
-                    font-size: 14px;
                     font-weight: bold;
                     filter: url(#shadow);
                 }
                 
                 .value {
                     font-family: Arial, Helvetica, sans-serif;
-                    font-size: 16px;
                     fill: white;
                     text-anchor: middle;
                 }
@@ -65,8 +63,16 @@ export function generateModernDesign(pokemon, spriteBase64, formattedTypes) {
         <!-- Card background with gradient -->
         <rect width="${width}" height="${height}" fill="url(#cardGradient)" rx="15" ry="15" />
         
-        <!-- Pokemon name with drop shadow -->
-        <text x="${width/2}" y="40" class="title">${pokemon.name}</text>
+        <!-- Pokemon name with drop shadow using fitText -->
+        ${fitText({
+            text: pokemon.name,
+            x: width/2,
+            y: 40,
+            boxWidth: width - 40,
+            boxHeight: 40,
+            maxFontSize: 24,
+            textClass: 'title'
+        })}
         
         <!-- Sprite with circular background -->
         <circle cx="${width/2}" cy="130" r="90" fill="white" fill-opacity="0.3" />
@@ -84,34 +90,101 @@ export function generateModernDesign(pokemon, spriteBase64, formattedTypes) {
             }).join('')}
         </g>
         
-        <!-- Stats as circular gauges -->
+        <!-- Stats as circular gauges with fitText -->
         <g transform="translate(50, 270)">
             <circle cx="0" cy="0" r="30" fill="rgba(255,255,255,0.2)" />
-            <text x="0" y="-10" class="stat-text" text-anchor="middle" fill="white">HP</text>
-            <text x="0" y="10" class="value">${pokemon.stats.find(stat => stat.stat.name === 'hp')?.base_stat || 0}</text>
+            ${fitText({
+                text: "HP",
+                x: 0,
+                y: -10,
+                boxWidth: 40,
+                boxHeight: 20,
+                maxFontSize: 14,
+                textClass: 'stat-text',
+                fill: 'white'
+            })}
+            ${fitText({
+                text: `${pokemon.stats.find(stat => stat.stat.name === 'hp')?.base_stat || 0}`,
+                x: 0,
+                y: 10,
+                boxWidth: 40,
+                boxHeight: 20,
+                maxFontSize: 16,
+                textClass: 'value'
+            })}
         </g>
         
         <g transform="translate(150, 270)">
             <circle cx="0" cy="0" r="30" fill="rgba(255,255,255,0.2)" />
-            <text x="0" y="-10" class="stat-text" text-anchor="middle" fill="white">ATK</text>
-            <text x="0" y="10" class="value">${pokemon.stats.find(stat => stat.stat.name === 'attack')?.base_stat || 0}</text>
+            ${fitText({
+                text: "ATK",
+                x: 0,
+                y: -10,
+                boxWidth: 40,
+                boxHeight: 20,
+                maxFontSize: 14,
+                textClass: 'stat-text',
+                fill: 'white'
+            })}
+            ${fitText({
+                text: `${pokemon.stats.find(stat => stat.stat.name === 'attack')?.base_stat || 0}`,
+                x: 0,
+                y: 10,
+                boxWidth: 40,
+                boxHeight: 20,
+                maxFontSize: 16,
+                textClass: 'value'
+            })}
         </g>
         
         <g transform="translate(250, 270)">
             <circle cx="0" cy="0" r="30" fill="rgba(255,255,255,0.2)" />
-            <text x="0" y="-10" class="stat-text" text-anchor="middle" fill="white">DEF</text>
-            <text x="0" y="10" class="value">${pokemon.stats.find(stat => stat.stat.name === 'defense')?.base_stat || 0}</text>
+            ${fitText({
+                text: "DEF",
+                x: 0,
+                y: -10,
+                boxWidth: 40,
+                boxHeight: 20,
+                maxFontSize: 14,
+                textClass: 'stat-text',
+                fill: 'white'
+            })}
+            ${fitText({
+                text: `${pokemon.stats.find(stat => stat.stat.name === 'defense')?.base_stat || 0}`,
+                x: 0,
+                y: 10,
+                boxWidth: 40,
+                boxHeight: 20,
+                maxFontSize: 16,
+                textClass: 'value'
+            })}
         </g>
         
-        <!-- Additional info with icons -->
+        <!-- Additional info with icons using fitText -->
         <g transform="translate(80, 340)">
             <circle cx="0" cy="0" r="25" fill="rgba(255,255,255,0.2)" />
-            <text x="0" y="5" class="value" style="font-size: 12px;">${pokemon.height/10}m</text>
+            ${fitText({
+                text: `${pokemon.height/10}m`,
+                x: 0,
+                y: 5,
+                boxWidth: 40,
+                boxHeight: 20,
+                maxFontSize: 12,
+                textClass: 'value'
+            })}
         </g>
         
         <g transform="translate(220, 340)">
             <circle cx="0" cy="0" r="25" fill="rgba(255,255,255,0.2)" />
-            <text x="0" y="5" class="value" style="font-size: 12px;">${pokemon.weight/10}kg</text>
+            ${fitText({
+                text: `${pokemon.weight/10}kg`,
+                x: 0,
+                y: 5,
+                boxWidth: 40,
+                boxHeight: 20,
+                maxFontSize: 12,
+                textClass: 'value'
+            })}
         </g>
         
         <!-- Footer -->

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokemon Card Text Fitting Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .container {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .control-panel {
+            flex: 1;
+            min-width: 300px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .preview {
+            flex: 2;
+            min-width: 300px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background: #2196F3;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover {
+            background: #0b7dda;
+        }
+        .card-container {
+            margin-top: 20px;
+            width: 100%;
+            max-width: 300px;
+        }
+        iframe {
+            width: 100%;
+            height: 400px;
+            border: none;
+        }
+        .status {
+            margin-top: 10px;
+            font-style: italic;
+            color: #666;
+        }
+        .examples {
+            margin-top: 20px;
+        }
+        .examples button {
+            margin-right: 5px;
+            margin-bottom: 5px;
+            background: #4CAF50;
+        }
+        .examples button:hover {
+            background: #45a049;
+        }
+        h2 {
+            margin-top: 20px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Pokemon Card Text Fitting Test</h1>
+    
+    <div class="container">
+        <div class="control-panel">
+            <h2>Controls</h2>
+            <form id="testForm">
+                <div class="form-group">
+                    <label for="pokemonName">Pokemon Name:</label>
+                    <input type="text" id="pokemonName" name="pokemonName" placeholder="Enter a Pokemon name">
+                </div>
+                
+                <div class="form-group">
+                    <label for="designSelect">Card Design:</label>
+                    <select id="designSelect" name="design">
+                        <option value="classic">Classic</option>
+                        <option value="modern">Modern</option>
+                    </select>
+                </div>
+                
+                <button type="submit">Generate Card</button>
+                
+                <div class="status" id="status"></div>
+                
+                <h2>Test Examples</h2>
+                <div class="examples">
+                    <p>Normal Pokemon:</p>
+                    <button type="button" data-pokemon="pikachu">Pikachu</button>
+                    <button type="button" data-pokemon="charizard">Charizard</button>
+                    
+                    <p>Long Names:</p>
+                    <button type="button" data-pokemon="crabominable">Crabominable</button>
+                    <button type="button" data-pokemon="feraligatr">Feraligatr</button>
+                    
+                    <p>Extremely Long Names:</p>
+                    <button type="button" data-pokemon="cofagrigus">Cofagrigus</button>
+                    <button type="button" data-pokemon="charjabug">Charjabug</button>
+                    <button type="button" data-pokemon="gourgeist">Gourgeist</button>
+                </div>
+            </form>
+        </div>
+        
+        <div class="preview">
+            <h2>Card Preview</h2>
+            <div class="card-container" id="cardContainer">
+                <div style="text-align: center; padding: 40px;">
+                    Select a Pokemon to see the card with text fitting.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('testForm');
+            const status = document.getElementById('status');
+            const cardContainer = document.getElementById('cardContainer');
+            const exampleButtons = document.querySelectorAll('.examples button');
+            
+            // Handle example buttons
+            exampleButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const pokemon = this.getAttribute('data-pokemon');
+                    document.getElementById('pokemonName').value = pokemon;
+                    generateCard();
+                });
+            });
+            
+            // Handle form submission
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                generateCard();
+            });
+            
+            function generateCard() {
+                const pokemonName = document.getElementById('pokemonName').value.trim().toLowerCase();
+                const design = document.getElementById('designSelect').value;
+                
+                if (!pokemonName) {
+                    status.textContent = "Please enter a Pokemon name";
+                    return;
+                }
+                
+                status.textContent = "Generating card...";
+                
+                // Create URL for the card
+                const baseUrl = window.location.origin;
+                const url = `${baseUrl}/pokemon?name=${encodeURIComponent(pokemonName)}&design=${design}`;
+                
+                // Create iframe to display the card
+                const iframe = document.createElement('iframe');
+                iframe.src = url;
+                iframe.onload = function() {
+                    status.textContent = "Card generated successfully!";
+                };
+                iframe.onerror = function() {
+                    status.textContent = "Error generating card. Pokemon might not exist.";
+                };
+                
+                // Replace content in card container
+                cardContainer.innerHTML = '';
+                cardContainer.appendChild(iframe);
+            }
+        });
+    </script>
+</body>
+</html> 
